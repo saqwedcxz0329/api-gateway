@@ -10,14 +10,4 @@ public class RouteConfig {
     String listenPath;
     String strategy;
     List<String> targets;
-
-    @Override
-    public String toString() {
-        return "Route{" +
-                "name='" + name + '\'' +
-                ", listenPath='" + listenPath + '\'' +
-                ", strategy='" + strategy + '\'' +
-                ", targets=" + targets +
-                '}';
-    }
 }

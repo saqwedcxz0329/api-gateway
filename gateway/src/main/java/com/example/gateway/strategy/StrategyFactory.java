@@ -1,8 +1,5 @@
-package com.example.gateway.service.strategy;
+package com.example.gateway.strategy;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class StrategyFactory {
     public Strategy getStrategy(String name) {
         if (name.equals("round-robin")) {

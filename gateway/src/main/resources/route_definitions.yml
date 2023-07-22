@@ -1,8 +1,13 @@
 definitions:
-  - name: demo
-    listen_path: /api/v1/ping
+  - name: health-check
+    listenPath: /api/v1/ping
     strategy: round-robin
     targets:
       - http://localhost:6789
       - http://localhost:6790
       - http://localhost:6791
+  - name: demo
+    listenPath: /api/v1/reflect
+    strategy: round-robin
+    targets:
+      - http://localhost:6789

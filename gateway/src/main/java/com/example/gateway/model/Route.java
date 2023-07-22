@@ -1,6 +1,6 @@
 package com.example.gateway.model;
 
-import com.example.gateway.service.strategy.Strategy;
+import com.example.gateway.strategy.Strategy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

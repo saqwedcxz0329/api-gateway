@@ -1,4 +1,4 @@
-package com.example.gateway.service.strategy;
+package com.example.gateway.strategy;
 
 import java.util.List;
 
