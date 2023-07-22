@@ -1,0 +1,8 @@
+definitions:
+  - name: demo
+    listen_path: /api/v1/ping
+    strategy: round-robin
+    targets:
+      - http://localhost:6789
+      - http://localhost:6790
+      - http://localhost:6791
