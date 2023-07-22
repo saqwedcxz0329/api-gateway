@@ -39,7 +39,7 @@ public class ReverseProxyServer {
     private static RouteDefinitionsConfig loadConfig() {
         Yaml yaml = new Yaml();
         RouteDefinitionsConfig config;
-        try (InputStream inputStream = ReverseProxyServer.class.getResourceAsStream("/route_definitions.yml")) {
+        try (InputStream inputStream = ReverseProxyServer.class.getResourceAsStream("/route-definitions.yml")) {
             config = yaml.loadAs(inputStream, RouteDefinitionsConfig.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
