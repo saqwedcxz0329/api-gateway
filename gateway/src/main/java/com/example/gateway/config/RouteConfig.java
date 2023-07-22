@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class Route {
+public class RouteConfig {
     String name;
     String listenPath;
     String strategy;

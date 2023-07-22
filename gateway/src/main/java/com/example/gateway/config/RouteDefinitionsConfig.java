@@ -12,14 +12,14 @@ import java.util.List;
 @ConfigurationProperties(prefix = "")
 @PropertySource(value = "classpath:route_definitions.yml", factory = YamlPropertySourceFactory.class)
 @Data
-public class RouteDefinitions {
+public class RouteDefinitionsConfig {
     @NestedConfigurationProperty
-    List<Route> definitions;
+    List<RouteConfig> definitions;
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Route definition : definitions) {
+        for (RouteConfig definition : definitions) {
             sb.append(definition.toString());
 
         }
