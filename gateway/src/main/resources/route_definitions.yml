@@ -11,3 +11,5 @@ definitions:
     strategy: round-robin
     targets:
       - http://localhost:6789
+      - http://localhost:6790
+      - http://localhost:6791

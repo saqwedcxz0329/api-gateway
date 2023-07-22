@@ -17,18 +17,14 @@ public class RoundRobinStrategy implements Strategy {
         if(targets.size() == 1) {
             return targets.get(0);
         }
-
-        if(this.current >= targets.size()) {
-            this.current = 0;
-        }
-
-
         return getHost(targets);
     }
 
     private synchronized String getHost(List<String> targets) {
-        String result = targets.get(this.current);
-        this.current++;
-        return result;
+        if(this.current >= targets.size()) {
+            this.current = 0;
+        }
+
+        return targets.get(this.current++);
     }
 }

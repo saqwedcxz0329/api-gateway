@@ -15,30 +15,24 @@ import java.io.InputStream;
 
 public class ReverseProxyServer {
     public static void main(String[] args) throws Exception {
-        // Create a new Jetty server instance
-        Server server = new Server(8080); // You can specify the desired port number
+        Server server = new Server(8080);
 
-        // Create a ServletContextHandler
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        contextHandler.setContextPath("/"); // Set the root context path
+        contextHandler.setContextPath("/");
 
         RouteDefinitionsConfig config = loadConfig();
         StrategyFactory factory = new StrategyFactory();
         for (RouteConfig routeConfig : config.getDefinitions()) {
             Route route = new Route(routeConfig.getName(), routeConfig.getListenPath(),
                                     factory.getStrategy(routeConfig.getStrategy()), routeConfig.getTargets());
-            // Add servlets or other handlers to the contextHandler
             contextHandler.addServlet(new ServletHolder(new CustomProxyServlet(route)), route.getListenPath());
         }
 
 
-        // Set the contextHandler as the handler for the server
         server.setHandler(contextHandler);
 
-        // Start the server
         server.start();
 
-        // Optionally, you can wait for the server to finish (e.g., when testing)
         server.join();
     }
 
