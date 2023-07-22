@@ -17,6 +17,7 @@ public class Controller {
     @GetMapping("/*")
     public String handle (HttpServletRequest request) {
         String requestPath = request.getRequestURI();
+        System.out.println("ReverseProxy: " + reverseProxy);
         return reverseProxy.handle(requestPath);
     }
 }
