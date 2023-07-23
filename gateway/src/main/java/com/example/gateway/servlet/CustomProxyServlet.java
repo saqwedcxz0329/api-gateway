@@ -22,6 +22,9 @@ public class CustomProxyServlet extends ProxyServlet {
 
         // NOTE: get targets from db/service discovery
         String host = route.getStrategy().elect(route.getTargets());
+        if(host.isEmpty()) {
+            return null;
+        }
         return host + targetURI;
     }
 }

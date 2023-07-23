@@ -15,12 +15,13 @@ import java.io.InputStream;
 
 public class ReverseProxyServer {
     public static void main(String[] args) throws Exception {
+        RouteDefinitionsConfig config = loadConfig();
+
         Server server = new Server(8080);
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
 
-        RouteDefinitionsConfig config = loadConfig();
         StrategyFactory factory = new StrategyFactory();
         for (RouteConfig routeConfig : config.getDefinitions()) {
             Route route = new Route(routeConfig.getName(), routeConfig.getListenPath(),
