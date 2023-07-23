@@ -21,6 +21,7 @@ public class ReverseProxyServer {
 
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setContextPath("/");
+        contextHandler.setErrorHandler(new CustomJsonErrorHandler());
 
         StrategyFactory factory = new StrategyFactory();
         for (RouteConfig routeConfig : config.getDefinitions()) {
