@@ -11,8 +11,8 @@ import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 
 public class ClientApplication {
@@ -23,9 +23,9 @@ public class ClientApplication {
             httpclient.start();
 
             // Set the number of concurrent calls
-            int totalCalls = 1500;
+            int totalCalls = 6000;
             CountDownLatch latch = new CountDownLatch(totalCalls);
-            Map<String, Integer> counter = new ConcurrentHashMap<>();
+            ConcurrentMap<String, Integer> counter = new ConcurrentHashMap<>();
 
             for (int i = 0; i < totalCalls; i++) {
                 // Create an HttpPost request with the URL
@@ -41,22 +41,22 @@ public class ClientApplication {
                     @SneakyThrows
                     @Override
                     public void completed(HttpResponse response) {
-                        latch.countDown(); // Decrease the latch count when the request completes
                         // Handle the response here
                         if (response.getStatusLine().getStatusCode() == 200) {
                             Header firstHeader = response.getFirstHeader("X-Application-Name");
                             String applicationName = firstHeader.getValue();
-                            counter.put(applicationName, counter.getOrDefault(applicationName, 0) + 1);
+                            counter.compute(applicationName, (key, value) -> (value == null) ? 1 : value + 1);
                         } else {
                             System.out.println("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
                             throw new RuntimeException("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
                         }
+                        latch.countDown(); // Decrease the latch count when the request completes
                     }
 
                     @Override
                     public void failed(Exception ex) {
                         // Handle request failure here
-                        System.out.println("Failed to send reuquest. Msg: " + ex.getMessage());
+                        System.out.println("Failed to send request. Msg: " + ex.getMessage());
                         latch.countDown(); // Decrease the latch count when the request completes
                     }
 
@@ -76,5 +76,4 @@ public class ClientApplication {
             throw new RuntimeException(e);
         }
     }
-
 }
