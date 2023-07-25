@@ -1,56 +1,79 @@
 package com.example.client;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import lombok.SneakyThrows;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.concurrent.FutureCallback;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 public class ClientApplication {
 
-    public static void main(String[] args) {
-        String apiUrl = "http://localhost:8080/api/v1/reflect";
-        int numThreads = 500;
+    public static void main(String[] args) throws IOException {
+        try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
+            String apiUrl = "http://localhost:8080/api/v1/reflect";
+            httpclient.start();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2000);
-        List<Future<Response>> futures = new ArrayList<>();
+            // Set the number of concurrent calls
+            int totalCalls = 1500;
+            CountDownLatch latch = new CountDownLatch(totalCalls);
+            Map<String, Integer> counter = new ConcurrentHashMap<>();
 
-        try {
-            PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
-            connManager.setDefaultMaxPerRoute(numThreads);
-            connManager.setMaxTotal(numThreads);
-            CloseableHttpClient httpClient = HttpClients.custom().setConnectionManager(connManager).build();
-            for (int i = 0; i < numThreads; i++) {
-                Callable<Response> task = new HttpPostTask(httpClient, apiUrl, "{\"game\": \"Mobile Legends\"}");
-                Future<Response> future = executorService.submit(task);
-                futures.add(future);
+            for (int i = 0; i < totalCalls; i++) {
+                // Create an HttpPost request with the URL
+                HttpPost httpPost = new HttpPost(apiUrl);
+                httpPost.setHeader("Content-Type", "application/json");
+                httpPost.setEntity(new StringEntity("{\"game\": \"Mobile Legends\"}"));
+
+                // Set request configuration (optional)
+                RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
+                httpPost.setConfig(requestConfig);
+
+                httpclient.execute(httpPost, new FutureCallback<HttpResponse>() {
+                    @SneakyThrows
+                    @Override
+                    public void completed(HttpResponse response) {
+                        latch.countDown(); // Decrease the latch count when the request completes
+                        // Handle the response here
+                        if (response.getStatusLine().getStatusCode() == 200) {
+                            Header firstHeader = response.getFirstHeader("X-Application-Name");
+                            String applicationName = firstHeader.getValue();
+                            counter.put(applicationName, counter.getOrDefault(applicationName, 0) + 1);
+                        } else {
+                            System.out.println("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
+                            throw new RuntimeException("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
+                        }
+                    }
+
+                    @Override
+                    public void failed(Exception ex) {
+                        // Handle request failure here
+                        System.out.println("Failed to send reuquest. Msg: " + ex.getMessage());
+                        latch.countDown(); // Decrease the latch count when the request completes
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        // Handle request cancellation here
+                        System.out.println("Request is cancelled");
+                        latch.countDown(); // Decrease the latch count when the request completes
+                    }
+                });
             }
 
-            // Process the results
-            Map<String, Integer> counter = new HashMap<>();
-            for (Future<Response> future : futures) {
-                try {
-                    Response response = future.get(5, TimeUnit.SECONDS);
-                    String applicationName = response.getApplicationName();
-                    counter.put(applicationName, counter.getOrDefault(applicationName, 0) + 1);
-                } catch (Exception e) {
-                    System.out.println("Faild to execute: " + e.getMessage());
-//                    e.printStackTrace();
-                }
-            }
+            // Wait for all requests to complete
+            latch.await();
             System.out.println(counter);
-            // Wait for all threads to complete
-            executorService.shutdown();
-            executorService.awaitTermination(10, TimeUnit.SECONDS);
-            httpClient.close();
-        } catch (InterruptedException | IOException e) {
-            System.out.println("Outer Exception: " + e.getMessage());
-//            e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
