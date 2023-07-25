@@ -7,7 +7,7 @@ definitions:
       - http://localhost:6790
       - http://localhost:6791
   - name: demo
-    listenPath: /api/v1/reflect
+    listenPath: /api/v1/reflection
     strategy: round-robin
     targets:
       - http://localhost:6789

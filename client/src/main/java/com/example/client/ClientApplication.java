@@ -19,7 +19,7 @@ public class ClientApplication {
 
     public static void main(String[] args) throws IOException {
         try (CloseableHttpAsyncClient httpclient = HttpAsyncClients.createDefault()) {
-            String apiUrl = "http://localhost:8080/api/v1/reflect";
+            String apiUrl = "http://localhost:8080/api/v1/reflection";
             httpclient.start();
 
             // Set the number of concurrent calls

@@ -21,7 +21,7 @@ public class Controller {
         return "pong";
     }
 
-    @PostMapping("/reflect")
+    @PostMapping("/reflection")
     public ResponseEntity<Map<String,Object>> reflect(@RequestBody Map<String, Object> body) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("X-Application-Name", name);
