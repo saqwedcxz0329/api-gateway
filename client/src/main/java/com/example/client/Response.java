@@ -1,4 +1,4 @@
-package org.example;
+package com.example.client;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

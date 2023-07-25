@@ -1,4 +1,4 @@
-package org.example;
+package com.example.client;
 
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -38,14 +38,13 @@ class HttpPostTask implements Callable<Response> {
                 Header firstHeader = response.getFirstHeader("X-Application-Name");
                 return new Response(firstHeader.getValue(), result);
             } else {
-                System.err.println(
-                        "Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
-                throw new RuntimeException(
-                        "Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
+                System.err.println("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
+                throw new RuntimeException("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("sendPostRequest: " + e.getMessage());
+//            e.printStackTrace();
             throw e;
         }
     }
