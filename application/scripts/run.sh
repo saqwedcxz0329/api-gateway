@@ -1,0 +1,1 @@
+java -jar ./target/application-0.0.1-SNAPSHOT.jar --server.port="$1" --spring.application.name="$2"

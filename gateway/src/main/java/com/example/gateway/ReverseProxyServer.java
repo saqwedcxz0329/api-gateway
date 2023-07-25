@@ -2,6 +2,7 @@ package com.example.gateway;
 
 import com.example.gateway.config.RouteConfig;
 import com.example.gateway.config.RouteDefinitionsConfig;
+import com.example.gateway.handler.CustomJsonErrorHandler;
 import com.example.gateway.model.Route;
 import com.example.gateway.servlet.CustomProxyServlet;
 import com.example.gateway.strategy.StrategyFactory;

@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
     public static void main(String[] args) {
         String apiUrl = "http://localhost:8080/api/v1/reflect";
-        int numThreads = 2000;
+        int numThreads = 500;
 
         ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         List<Future<Response>> futures = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.example.gateway;
+package com.example.gateway.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.jetty.server.Dispatcher;
