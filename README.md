@@ -7,6 +7,8 @@
   * `./application`
 * Client
   * `./client`
+# Design
+![alt text](design.png "Design")
 
 # Environment Requirements
 On Mac/Linux/Windows make sure you have these:
@@ -54,7 +56,7 @@ On Mac/Linux/Windows make sure you have these:
 # API SPEC
 * POST reflection API
     * path
-        * `/api/v1/reflection`
+      * `/api/v1/reflection`
     * request body (any valid json format)
       ```json
       {

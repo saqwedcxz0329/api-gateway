@@ -9,6 +9,7 @@ import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,7 +32,7 @@ public class ClientApplication {
                 // Create an HttpPost request with the URL
                 HttpPost httpPost = new HttpPost(apiUrl);
                 httpPost.setHeader("Content-Type", "application/json");
-                httpPost.setEntity(new StringEntity("{\"game\": \"Mobile Legends\"}"));
+                httpPost.setEntity(new StringEntity(String.format("{\"id\": %d, \"game\": \"Mobile Legends\"}", i)));
 
                 // Set request configuration (optional)
                 RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(5000).setConnectTimeout(5000).build();
@@ -45,6 +46,7 @@ public class ClientApplication {
                         if (response.getStatusLine().getStatusCode() == 200) {
                             Header firstHeader = response.getFirstHeader("X-Application-Name");
                             String applicationName = firstHeader.getValue();
+                            System.out.println(EntityUtils.toString(response.getEntity()));
                             counter.compute(applicationName, (key, value) -> (value == null) ? 1 : value + 1);
                         } else {
                             System.out.println("Failed to get response. HTTP error code: " + response.getStatusLine().getStatusCode());

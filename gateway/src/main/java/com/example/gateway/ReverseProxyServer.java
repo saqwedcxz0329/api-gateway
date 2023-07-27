@@ -31,7 +31,6 @@ public class ReverseProxyServer {
             contextHandler.addServlet(new ServletHolder(new CustomProxyServlet(route)), route.getListenPath());
         }
 
-
         server.setHandler(contextHandler);
 
         server.start();
